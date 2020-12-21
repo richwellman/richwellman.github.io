@@ -115,4 +115,4 @@ tag_archive:
   type: liquid
   path: /tags/
 
-theme: jekyll-theme-slate
+#theme: jekyll-theme-slate
