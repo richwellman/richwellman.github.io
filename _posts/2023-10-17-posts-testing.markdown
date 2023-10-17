@@ -7,7 +7,7 @@ categories: jekyll update
 
 # AI is bunk
 
-The moder craze over generative AI is kind of crazy.  It is little more than the magic 8 ball that gives you seeming magical answers to your question
+The modern craze over generative AI is kind of crazy.  It is little more than the magic 8 ball that gives you seemingly magical answers to your questions
 
 - causal inference
 - machine learning
