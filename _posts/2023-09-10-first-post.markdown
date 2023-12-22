@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Generative AI class on coursera"
+title:  "First post example"
 date:   2023-09-10 13:27:31 -0500
 categories: jekyll update
 ---
