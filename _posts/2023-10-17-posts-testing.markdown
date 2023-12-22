@@ -7,5 +7,5 @@ categories: jekyll update
 
 # AI is the future
 
-The current GPT models are equivalent to when the internet came out.  It will fundamentally change how tehcnology works.  Just now how you think it will
+The current GPT models are equivalent to when the internet came out.  It will fundamentally change how tehcnology works.  Just not how you think it will
 
