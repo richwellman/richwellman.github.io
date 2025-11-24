@@ -281,7 +281,7 @@ The difference is the ROI of thinking before prompting.
 
 ---
 
-**Need help implementing AI that actually delivers value?** I help companies build AI systems with proper evaluation frameworks and business metric alignment—which starts with asking the right questions. [Let's talk](mailto:your-email@example.com) about making your AI projects work.
+**Need help implementing AI that actually delivers value?** I help companies build AI systems with proper evaluation frameworks and business metric alignment—which starts with asking the right questions. [Let's talk](mailto:richwellman7@gmail.com) about making your AI projects work.
 
 ---
 
