@@ -20,6 +20,9 @@ linkedin_username: "richwellman"
 #########################################################################################
 theme: "minima"
 
+minima:
+  skin: dark
+
 rss: rss
 
 kramdown:
