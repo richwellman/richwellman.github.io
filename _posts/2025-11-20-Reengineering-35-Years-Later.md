@@ -129,7 +129,7 @@ One question gives you incremental improvement. The other gives you the Ford-to-
 
 ---
 
-**Struggling to figure out where to start?** I help companies identify which processes to obliterate and how to redesign them for AI-first operations. The goal isn't just automation—it's transformation that delivers measurable business results. [Let's talk](mailto:your-email@example.com) about reimagining your processes before you automate them.
+**Struggling to figure out where to start?** I help companies identify which processes to obliterate and how to redesign them for AI-first operations. The goal isn't just automation—it's transformation that delivers measurable business results. [Let's talk](mailto:richwellman7@gmail.com) about reimagining your processes before you automate them.
 
 ---
 
