@@ -39,12 +39,12 @@ That's why spending 55 minutes on the question isn't wasted time. It's the work.
 ## Bad Prompt vs. Good Prompt
 
 **Bad Prompt:**
-```
+```markdown
 Write a sales email.
 ```
 
 **Good Prompt:**
-```
+```markdown
 Write a sales follow-up email for a B2B SaaS prospect who attended our webinar
 on AI automation but didn't respond to our first outreach.
 
