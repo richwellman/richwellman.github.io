@@ -1,4 +1,4 @@
-### Welcome
+**Welcome**
 
 From Agile to AI, companies keep making the same mistake: adopting frameworks without understanding the fundamentals. They chase digital transformation, implement GenAI projects, and celebrate ML metrics while missing the only question that matters: Did this actually help the business?
 
