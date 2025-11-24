@@ -1,5 +1,3 @@
-Here you can say lots of fun things about your site.
+This blog is about how to use AI to actually solve business problems.
 
-Maybe say a some things about yourself.
-
-Or maybe what you plan to blog about.
+My name is Rich Wellman and I have been automating various things my entire career from the mid 90's
