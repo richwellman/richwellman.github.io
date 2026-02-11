@@ -139,4 +139,4 @@ Hammer, M. (1990). "Reengineering Work: Don't Automate, Obliterate." *Harvard Bu
 
 ---
 
-*About the author: [Your name] helps companies implement AI automation that delivers measurable business value. With experience in business process reengineering and enterprise transformation, [he/she] specializes in identifying processes that should be obliterated, not automated.*
+*About the author: Richard Wellman helps companies implement AI automation that delivers measurable business value. With experience in business process reengineering and enterprise transformation,he specializes in identifying processes that should be obliterated, not automated.*
