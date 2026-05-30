@@ -1,6 +1,6 @@
 Enterprise AI for healthcare — built from the inside.
 
-I'm a Solutions Architect at a major healthcare system. I build AI automation
+I'm an AI Automation Specialist at a major healthcare system. I build AI automation
 pipelines, agent systems, and data platforms — then figure out how to secure
 and govern them in an environment where PHI exposure is a real consequence,
 not a theoretical risk.
