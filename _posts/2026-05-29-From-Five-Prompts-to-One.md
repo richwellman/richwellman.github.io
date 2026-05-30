@@ -19,21 +19,56 @@ I built before that teaches more than the solution itself.
 
 ## What I Tried Before It Worked
 
-**Approach 1 — Just ask Copilot.** Paste the PDF text in, prompt for extraction.
+**Approach 1 — Just ask Copilot.**
+
+```
+PDF → human pastes text → Copilot Chat → human copies output → ???
+
+No API. No trigger. No automation path.
+```
+
+Paste the PDF text in, prompt for extraction.
 This proved the concept: an LLM can read these documents and return structured data
 without a custom parser. It also proved the obvious limitation: you can't automate
 a paste-and-wait workflow.
 
-**Approach 2 — Azure AI Document Intelligence custom models.** I trained a custom
-model on each document type — wire transfer forms, sweep summaries, concentration
-reports. Document Intelligence is excellent for fixed-layout forms, and it worked
-for those. Treasury documents aren't fixed layouts. One sweep has twelve rows; the
-next has twenty-three. Wire requests have optional fields that appear only for
-inter-bank transfers. A new document type meant a new labeling session, a new
-training run, a new testing cycle. The maintenance overhead compounded immediately.
+---
 
-**Approach 3 — Azure AI Content Understanding: classifier plus type-specific
-analyzers.** A smarter architecture: a classifier to identify the document type,
+**Approach 2 — Azure AI Document Intelligence custom models.**
+
+```
+PDF → Document Intelligence → Structured JSON
+       (custom model per type)
+
+       Model A: wire transfer forms    ← labeled + trained
+       Model B: cash sweep summaries   ← labeled + trained
+       Model C: concentration reports  ← labeled + trained
+       Model D: next new type?         ← start over
+```
+
+I trained a custom model on each document type — wire transfer forms, sweep
+summaries, concentration reports. Document Intelligence is excellent for
+fixed-layout forms, and it worked for those. Treasury documents aren't fixed
+layouts. One sweep has twelve rows; the next has twenty-three. Wire requests have
+optional fields that appear only for inter-bank transfers. A new document type
+meant a new labeling session, a new training run, a new testing cycle. The
+maintenance overhead compounded immediately.
+
+---
+
+**Approach 3 — Azure AI Content Understanding: classifier plus type-specific analyzers.**
+
+```
+              ┌─→ Analyzer A ─→ JSON
+PDF → Classifier ─→ Analyzer B ─→ JSON
+              └─→ Analyzer C ─→ JSON
+
+Failure point 1: misclassification routes to wrong analyzer
+Failure point 2: analyzer hits unseen layout variant
+Failure point 3: field mapping incomplete
+```
+
+A smarter architecture: a classifier to identify the document type,
 then route to the right analyzer. I built this with Azure AI Content Understanding
 — a classifier with child analyzers for each document category. The architecture
 was sound. The failure modes multiplied. Misclassification routes the document to
@@ -43,17 +78,41 @@ surface without proportional accuracy. Debugging a failed extraction now means
 asking: did the classifier route correctly? Did the right analyzer fire? Did the
 extraction return nulls it shouldn't have? Complexity scaled faster than reliability.
 
-**Approach 4 — Copilot Studio orchestrating an Azure Function.** I moved to
-Copilot Studio as the delivery layer, with an Azure Function handling extraction.
-The problem: the function became a maintenance bottleneck. Custom parsing logic per
-document type. Every new format meant new code. Different language, same problem as
-the custom models.
+---
 
-**Approach 5 — GPT-4.1 with classify-then-extract prompts.** I embraced LLM-based
-extraction fully. A classification prompt identified the document type. A Power
-Automate Switch routed to one of four extraction prompts, each with its own JSON
-schema. This was the closest I got before the real solution — and it exposed the
-actual problem clearly.
+**Approach 4 — Copilot Studio orchestrating an Azure Function.**
+
+```
+PDF → Copilot Studio → Power Automate → Azure Function → JSON
+                                              ↑
+                                   custom parsing code
+                                   per document type
+                                   (same problem, different language)
+```
+
+I moved to Copilot Studio as the delivery layer, with an Azure Function handling
+extraction. The problem: the function became a maintenance bottleneck. Custom
+parsing logic per document type. Every new format meant new code. Different
+language, same problem as the custom models.
+
+---
+
+**Approach 5 — GPT-4.1 with classify-then-extract prompts.**
+
+```
+PDF → Classify prompt ─→ Switch ─→ Prompt A + Schema A ─→ JSON
+                                 ─→ Prompt B + Schema B ─→ JSON
+                                 ─→ Prompt C + Schema C ─→ JSON
+                                 ─→ Prompt D + Schema D ─→ JSON
+
+5 prompts · 4 schemas · 1 classifier · 4 failure branches
+New document type = new prompt + new Switch case + new schema
+```
+
+I embraced LLM-based extraction fully. A classification prompt identified the
+document type. A Power Automate Switch routed to one of four extraction prompts,
+each with its own JSON schema. This was the closest I got before the real solution
+— and it exposed the actual problem clearly.
 
 GPT-4.1 is an instruction-following model. The extraction prompts I needed weren't
 instruction-following tasks. They were reasoning tasks:
@@ -79,6 +138,13 @@ schema, a new Switch case.
 ## What Actually Worked
 
 I collapsed everything to one prompt.
+
+```
+PDF → OCR → GPT-5 reasoning (1 prompt, 1 schema) → Parse JSON → Validate → Database
+
+1 prompt · 1 schema · 0 classifiers · 0 branches
+New document type = update one prompt
+```
 
 One prompt. One schema. All document types. No classifier. No Switch. No branches.
 
@@ -106,12 +172,6 @@ The schema defines every money movement as a `from → to → amount` row:
 The prompt instructs the model to extract every distinct money movement, infer
 shared values from context, use FFC accounts as the real beneficiary, and validate
 that amounts sum to the grand total.
-
-The model runs on GPT-5 reasoning. The pipeline is five steps:
-
-```
-Trigger → OCR → One Prompt → Parse JSON → Validate → Database
-```
 
 The reasoning model reads the document, builds an internal model of its structure,
 infers entity relationships, and maps everything to the universal schema — without
