@@ -1,6 +1,6 @@
 # From Five Prompts to One: How a Reasoning Model Eliminated an Entire Pipeline Layer
 
-We built six architectures to solve the same problem. The one that worked was the simplest.
+I built six architectures to solve the same problem. The one that worked was the simplest.
 
 The problem: Treasury staff at a major healthcare system receive banking documents
 every day — patient cash sweeps, wire transfer requests, concentration reports,
@@ -13,18 +13,18 @@ line items totaling tens of millions of dollars. One transposed account number i
 hours of debugging.
 
 The solution, eventually, was a single prompt running on a reasoning model. What
-we built before that teaches more than the solution itself.
+I built before that teaches more than the solution itself.
 
 ---
 
-## What We Tried Before It Worked
+## What I Tried Before It Worked
 
 **Approach 1 — Just ask Copilot.** Paste the PDF text in, prompt for extraction.
 This proved the concept: an LLM can read these documents and return structured data
 without a custom parser. It also proved the obvious limitation: you can't automate
 a paste-and-wait workflow.
 
-**Approach 2 — Azure AI Document Intelligence custom models.** We trained a custom
+**Approach 2 — Azure AI Document Intelligence custom models.** I trained a custom
 model on each document type — wire transfer forms, sweep summaries, concentration
 reports. Document Intelligence is excellent for fixed-layout forms, and it worked
 for those. Treasury documents aren't fixed layouts. One sweep has twelve rows; the
@@ -34,7 +34,7 @@ training run, a new testing cycle. The maintenance overhead compounded immediate
 
 **Approach 3 — Azure AI Content Understanding: classifier plus type-specific
 analyzers.** A smarter architecture: a classifier to identify the document type,
-then route to the right analyzer. We built this with Azure AI Content Understanding
+then route to the right analyzer. I built this with Azure AI Content Understanding
 — a classifier with child analyzers for each document category. The architecture
 was sound. The failure modes multiplied. Misclassification routes the document to
 the wrong analyzer. The right analyzer hits a layout variant it hasn't seen. The
@@ -43,19 +43,19 @@ surface without proportional accuracy. Debugging a failed extraction now means
 asking: did the classifier route correctly? Did the right analyzer fire? Did the
 extraction return nulls it shouldn't have? Complexity scaled faster than reliability.
 
-**Approach 4 — Copilot Studio orchestrating an Azure Function.** We moved to
+**Approach 4 — Copilot Studio orchestrating an Azure Function.** I moved to
 Copilot Studio as the delivery layer, with an Azure Function handling extraction.
 The problem: the function became a maintenance bottleneck. Custom parsing logic per
 document type. Every new format meant new code. Different language, same problem as
 the custom models.
 
-**Approach 5 — GPT-4.1 with classify-then-extract prompts.** We embraced LLM-based
+**Approach 5 — GPT-4.1 with classify-then-extract prompts.** I embraced LLM-based
 extraction fully. A classification prompt identified the document type. A Power
 Automate Switch routed to one of four extraction prompts, each with its own JSON
-schema. This was the closest we got before the real solution — and it exposed the
+schema. This was the closest I got before the real solution — and it exposed the
 actual problem clearly.
 
-GPT-4.1 is an instruction-following model. The extraction prompts we needed weren't
+GPT-4.1 is an instruction-following model. The extraction prompts I needed weren't
 instruction-following tasks. They were reasoning tasks:
 
 - Infer that the single "From" account at the top of a sweep applies to every row
@@ -68,7 +68,7 @@ instruction-following tasks. They were reasoning tasks:
 
 GPT-4.1 handled clean documents acceptably. On complex ones it left fields blank,
 treated cost breakdowns as separate transfers, or misread structural relationships.
-The model was doing its best. We were asking it to do something it wasn't built for.
+The model was doing its best. I was asking it to do something it wasn't built for.
 
 The architecture also created a maintenance problem: five prompts, four JSON schemas,
 a Switch with four branches. Adding a new document type meant a new prompt, a new
@@ -78,7 +78,7 @@ schema, a new Switch case.
 
 ## What Actually Worked
 
-We collapsed everything to one prompt.
+I collapsed everything to one prompt.
 
 One prompt. One schema. All document types. No classifier. No Switch. No branches.
 
