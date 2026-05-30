@@ -1,7 +1,19 @@
-**Welcome**
+Enterprise AI for healthcare — built from the inside.
 
-I write about automation, AI, and business processes from the trenches. Not the hype. Not the theory. The messy reality of making technology deliver actual business value.
+I'm a Solutions Architect at a major healthcare system. I build AI automation
+pipelines, agent systems, and data platforms — then figure out how to secure
+and govern them in an environment where PHI exposure is a real consequence,
+not a theoretical risk.
 
-This blog is for business leaders evaluating AI projects, IT professionals tired of the hype, and anyone who suspects their company is too complicated to digitize. You'll find skepticism of automation theater, practical lessons from failed transformations, and hard-won insights about making technology work in the real world.
+Most AI content is written by people who haven't deployed inside a regulated
+health system. Most healthcare IT content doesn't go deep on AI architecture.
+This blog lives at that intersection.
 
-No buzzwords. No evangelism. Just what actually works.
+Topics I cover: Copilot Studio agent design, Microsoft Fabric data engineering,
+AI governance for HIPAA environments, and the specific places enterprise AI
+breaks in ways a vendor demo never shows you.
+
+If you're a healthcare IT architect or IT leader trying to actually deploy AI —
+not just run a pilot and call it innovation — this is written for you.
+
+No buzzwords. No evangelism. Just what I actually shipped.
