@@ -13,7 +13,4 @@ Topics I cover: Copilot Studio agent design, Microsoft Fabric data engineering,
 AI governance for HIPAA environments, and the specific places enterprise AI
 breaks in ways a vendor demo never shows you.
 
-If you're a healthcare IT architect or IT leader trying to actually deploy AI —
-not just run a pilot and call it innovation — this is written for you.
-
 No buzzwords. No evangelism. Just what I actually shipped.
