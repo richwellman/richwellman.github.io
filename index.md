@@ -12,5 +12,3 @@ This blog lives at that intersection.
 Topics I cover: Copilot Studio agent design, Microsoft Fabric data engineering,
 AI governance for HIPAA environments, and the specific places enterprise AI
 breaks in ways a vendor demo never shows you.
-
-No buzzwords. No evangelism. Just what I actually shipped.
