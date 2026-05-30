@@ -285,4 +285,4 @@ The difference is the ROI of thinking before prompting.
 
 ---
 
-*About the author: [Your name] helps companies implement AI automation that delivers measurable business value, starting with clearly defining what "value" means for their specific context.*
+*Rich Wellman is a Solutions Architect at a major healthcare system, building AI automation on Azure. He writes about what actually works at [richwellman.com](https://richwellman.com).*
