@@ -24,22 +24,24 @@ This proved the concept: an LLM can read these documents and return structured d
 without a custom parser. It also proved the obvious limitation: you can't automate
 a paste-and-wait workflow.
 
-**Approach 2 — Custom Document Intelligence models.** We trained a custom model on
-each document type — wire transfer forms, sweep summaries, concentration reports.
-It worked for fixed layouts. Treasury documents aren't fixed layouts. One sweep has
-twelve rows; the next has twenty-three. Wire requests have optional fields that
-appear only for inter-bank transfers. A new document type meant a new labeling
-session, a new training run, a new testing cycle. The maintenance overhead
-compounded immediately.
+**Approach 2 — Azure AI Document Intelligence custom models.** We trained a custom
+model on each document type — wire transfer forms, sweep summaries, concentration
+reports. Document Intelligence is excellent for fixed-layout forms, and it worked
+for those. Treasury documents aren't fixed layouts. One sweep has twelve rows; the
+next has twenty-three. Wire requests have optional fields that appear only for
+inter-bank transfers. A new document type meant a new labeling session, a new
+training run, a new testing cycle. The maintenance overhead compounded immediately.
 
-**Approach 3 — Classifier plus type-specific analyzers.** A smarter architecture:
-classify the document first, route to the right analyzer. The architecture was sound.
-The failure modes multiplied. Misclassification routes the document to the wrong
-analyzer. The right analyzer hits a layout variant it hasn't seen. The extraction
-succeeds but a field mapping is incomplete. Each layer adds diagnostic surface
-without proportional accuracy. Debugging a failed extraction now means asking: did
-the classifier route correctly? Did the right analyzer fire? Did the extraction
-return nulls it shouldn't have? Complexity scaled faster than reliability.
+**Approach 3 — Azure AI Content Understanding: classifier plus type-specific
+analyzers.** A smarter architecture: a classifier to identify the document type,
+then route to the right analyzer. We built this with Azure AI Content Understanding
+— a classifier with child analyzers for each document category. The architecture
+was sound. The failure modes multiplied. Misclassification routes the document to
+the wrong analyzer. The right analyzer hits a layout variant it hasn't seen. The
+extraction succeeds but a field mapping is incomplete. Each layer adds diagnostic
+surface without proportional accuracy. Debugging a failed extraction now means
+asking: did the classifier route correctly? Did the right analyzer fire? Did the
+extraction return nulls it shouldn't have? Complexity scaled faster than reliability.
 
 **Approach 4 — Copilot Studio orchestrating an Azure Function.** We moved to
 Copilot Studio as the delivery layer, with an Azure Function handling extraction.
