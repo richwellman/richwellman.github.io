@@ -63,9 +63,7 @@ If a process scores low on both axes, it's a Fill-in at best and a Trap at worst
 
 Once a process passes the quadrant filter, run the numbers:
 
-```
-Payback Period = Cost to Automate ÷ Monthly Savings
-```
+![Automation payback period formula](/assets/images/payback_period_formula_titled.svg)
 
 **Cost side:** development hours × fully-loaded rate, tooling and licensing, QA and testing, change management, ongoing maintenance.
 
