@@ -28,23 +28,7 @@ Both errors share the same root cause: the decision was made on gut feel, not ec
 
 Before I scope any automation now, I place the candidate process in a 2×2. The axes are implementation effort and business value.
 
-```
-HIGH VALUE
-    │
-    │  Strategic Bets  │  Quick Wins  ◄── Start here
-    │  (High effort,   │  (Low effort,
-    │   High value)    │   High value)
-    │                  │
-    ├──────────────────┼──────────────────
-    │                  │
-    │  Traps ✗         │  Fill-ins
-    │  (High effort,   │  (Low effort,
-    │   Low value)     │   Low value)
-    │                  │
-LOW VALUE
-    └──────────────────────────────────
-    HIGH EFFORT              LOW EFFORT
-```
+![Priority matrix](/assets/images/priority_2x2_matrix.svg)
 
 **Quick Wins first.** High-frequency, structured processes that live in a single system. Low effort to automate, high payback.
 
