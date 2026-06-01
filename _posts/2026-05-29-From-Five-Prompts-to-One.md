@@ -21,11 +21,7 @@ I built before that teaches more than the solution itself.
 
 **Approach 1 — Just ask Copilot.**
 
-```
-PDF → human pastes text → Copilot Chat → human copies output → ???
-
-No API. No trigger. No automation path.
-```
+![Manual flow](/assets/images/manual_copilot_flow_v2.svg)
 
 Paste the PDF text in, prompt for extraction.
 This proved the concept: an LLM can read these documents and return structured data
@@ -36,15 +32,8 @@ a paste-and-wait workflow.
 
 **Approach 2 — Azure AI Document Intelligence custom models.**
 
-```
-PDF → Document Intelligence → Structured JSON
-       (custom model per type)
+![Doc Intelligence Pipeline](/assets/images/doc_intelligence_pipeline.svg)
 
-       Model A: wire transfer forms    ← labeled + trained
-       Model B: cash sweep summaries   ← labeled + trained
-       Model C: concentration reports  ← labeled + trained
-       Model D: next new type?         ← start over
-```
 
 I trained a custom model on each document type — wire transfer forms, sweep
 summaries, concentration reports. Document Intelligence is excellent for
@@ -58,15 +47,7 @@ maintenance overhead compounded immediately.
 
 **Approach 3 — Azure AI Content Understanding: classifier plus type-specific analyzers.**
 
-```
-              ┌─→ Analyzer A ─→ JSON
-PDF → Classifier ─→ Analyzer B ─→ JSON
-              └─→ Analyzer C ─→ JSON
-
-Failure point 1: misclassification routes to wrong analyzer
-Failure point 2: analyzer hits unseen layout variant
-Failure point 3: field mapping incomplete
-```
+![Content Understanding Pipeline](/assets/images/classifier_failure_points.svg)
 
 A smarter architecture: a classifier to identify the document type,
 then route to the right analyzer. I built this with Azure AI Content Understanding
@@ -82,13 +63,7 @@ extraction return nulls it shouldn't have? Complexity scaled faster than reliabi
 
 **Approach 4 — Copilot Studio orchestrating an Azure Function.**
 
-```
-PDF → Copilot Studio → Power Automate → Azure Function → JSON
-                                              ↑
-                                   custom parsing code
-                                   per document type
-                                   (same problem, different language)
-```
+![Copilot Automate Pipeline](/assets/images/copilot_automate_pipeline.svg)
 
 I moved to Copilot Studio as the delivery layer, with an Azure Function handling
 extraction. The problem: the function became a maintenance bottleneck. Custom
@@ -99,15 +74,7 @@ language, same problem as the custom models.
 
 **Approach 5 — GPT-4.1 with classify-then-extract prompts.**
 
-```
-PDF → Classify prompt ─→ Switch ─→ Prompt A + Schema A ─→ JSON
-                                 ─→ Prompt B + Schema B ─→ JSON
-                                 ─→ Prompt C + Schema C ─→ JSON
-                                 ─→ Prompt D + Schema D ─→ JSON
-
-5 prompts · 4 schemas · 1 classifier · 4 failure branches
-New document type = new prompt + new Switch case + new schema
-```
+![Classify Switch Pipeline](/assets/images/classify_switch_pipeline.svg)
 
 I embraced LLM-based extraction fully. A classification prompt identified the
 document type. A Power Automate Switch routed to one of four extraction prompts,
@@ -139,12 +106,7 @@ schema, a new Switch case.
 
 I collapsed everything to one prompt.
 
-```
-PDF → OCR → GPT-5 reasoning (1 prompt, 1 schema) → Parse JSON → Validate → Database
-
-1 prompt · 1 schema · 0 classifiers · 0 branches
-New document type = update one prompt
-```
+![GPT5 prompt Pipeline](/assets/images/gpt5_single_prompt_pipeline_v2.svg)
 
 One prompt. One schema. All document types. No classifier. No Switch. No branches.
 
