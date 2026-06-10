@@ -1,1 +1,1 @@
-Hi 👋 I am Rich Wellman, a data and AI professional. I work as a Data and AI Solutions Architect inside a major health system.
+Hi 👋 I am Rich Wellman, a Data and AI professional. I work as a Data and AI Solutions Architect inside a major health system.
