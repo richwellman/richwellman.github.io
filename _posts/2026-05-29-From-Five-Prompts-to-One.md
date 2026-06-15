@@ -1,116 +1,38 @@
-# From Five Prompts to One: How a Reasoning Model Eliminated an Entire Pipeline Layer
+# From Five Prompts to One
 
-I built six architectures to solve the same problem. The one that worked was the simplest.
+So we got to one prompt eventually. But it took six different architectures to get there, and I wouldn't have believed it would work if I hadn't watched it happen.
 
-The problem: Treasury staff at a major healthcare system receive banking documents
-every day — patient cash sweeps, wire transfer requests, concentration reports,
-standalone transfers. Each one a PDF. Each one needs to be reconciled against a
-treasury management system export to confirm every dollar moved where it was
-supposed to move.
+The problem is banking documents. Wire transfer requests, patient cash sweeps, concentration reports. Treasury staff reconcile these against the system every day to confirm every dollar moved where it was supposed to. Each document has transactions. Each transaction has a from, a to, and an amount. The job is to extract all of that and produce rows the system can compare against.
 
-Manual reconciliation is slow. A single Patient Cash Sweep can contain seventeen
-line items totaling tens of millions of dollars. One transposed account number is
-hours of debugging.
-
-The solution, eventually, was a single prompt running on a reasoning model. What
-I built before that teaches more than the solution itself.
-
----
-
-## What I Tried Before It Worked
-
-**Approach 1 — Just ask Copilot.**
+The first thing I tried was the obvious thing. Paste the PDF text into a model, prompt it for structured JSON. That worked as a proof of concept. An LLM can read these documents and return structured output without a custom parser. You can't automate that form, but the signal was clear enough to keep going.
 
 ![Manual flow](/assets/images/manual_copilot_flow_v2.svg)
 
-Paste the PDF text in, prompt for extraction.
-This proved the concept: an LLM can read these documents and return structured data
-without a custom parser. It also proved the obvious limitation: you can't automate
-a paste-and-wait workflow.
-
----
-
-**Approach 2 — Azure AI Document Intelligence custom models.**
+So we moved to custom Document Intelligence models. Trained per document type, one for wire transfers, one for sweep summaries. Fixed layouts worked fine. Treasury documents don't have fixed layouts. One sweep has twelve rows, the next has twenty-three. Wire requests have optional fields that only show up for inter-bank transfers. Every time a new document type came in, another labeling session, another training run, another testing cycle. The maintenance overhead piled up immediately.
 
 ![Doc Intelligence Pipeline](/assets/images/doc_intelligence_pipeline.svg)
 
-
-I trained a custom model on each document type — wire transfer forms, sweep
-summaries, concentration reports. Document Intelligence is excellent for
-fixed-layout forms, and it worked for those. Treasury documents aren't fixed
-layouts. One sweep has twelve rows; the next has twenty-three. Wire requests have
-optional fields that appear only for inter-bank transfers. A new document type
-meant a new labeling session, a new training run, a new testing cycle. The
-maintenance overhead compounded immediately.
-
----
-
-**Approach 3 — Azure AI Content Understanding: classifier plus type-specific analyzers.**
+Then I built a classifier that routed each document to its matching analyzer. Classify first, send it to the right handler. That's a reasonable pattern. The failure modes multiplied proportionally. Misclassify a document and it goes to the wrong analyzer. Send it to the right analyzer and it hits a layout variant it hasn't seen. Get all that right and a field mapping is still incomplete. Three layers meant three places things could go wrong. Debugging a failure meant asking: did the classifier route correctly? Did the right analyzer fire? Were the nulls expected? I was spending more time diagnosing the pipeline than improving the extraction.
 
 ![Content Understanding Pipeline](/assets/images/classifier_failure_points.svg)
 
-A smarter architecture: a classifier to identify the document type,
-then route to the right analyzer. I built this with Azure AI Content Understanding
-— a classifier with child analyzers for each document category. The architecture
-was sound. The failure modes multiplied. Misclassification routes the document to
-the wrong analyzer. The right analyzer hits a layout variant it hasn't seen. The
-extraction succeeds but a field mapping is incomplete. Each layer adds diagnostic
-surface without proportional accuracy. Debugging a failed extraction now means
-asking: did the classifier route correctly? Did the right analyzer fire? Did the
-extraction return nulls it shouldn't have? Complexity scaled faster than reliability.
-
----
-
-**Approach 4 — Copilot Studio orchestrating an Azure Function.**
+I moved to an Azure Function handling extraction with a low-code agent as the delivery layer. The function called AI services and returned structured JSON. Different layer, same underlying problem. Custom parsing logic per document type, new code for every format variation, a new maintenance bottleneck in a different place.
 
 ![Copilot Automate Pipeline](/assets/images/copilot_automate_pipeline.svg)
 
-I moved to Copilot Studio as the delivery layer, with an Azure Function handling
-extraction. The problem: the function became a maintenance bottleneck. Custom
-parsing logic per document type. Every new format meant new code. Different
-language, same problem as the custom models.
+Then I committed fully to LLM-based extraction. A classification prompt identified the document type. A Switch action routed to one of four type-specific extraction prompts, each with its own JSON schema. Five prompts. Four schemas. Four Switch branches. This was the closest I came before the thing that actually worked, and it's also where I finally understood what the real problem was.
 
----
-
-**Approach 5 — GPT-4.1 with classify-then-extract prompts.**
+GPT-4.1 is an instruction-following model. And most of what these documents required wasn't instruction-following. It was reasoning. Inferring that the single From account at the top of a sweep applies to every row in the table below it. Recognizing that FFC routing means the sub-account is the real beneficiary, not the intermediate bank. Deciding whether a Total row aggregates multiple destinations or just validates a single wire amount. On clean documents, GPT-4.1 did okay. On the complex ones, it left from_entity blank, treated cost breakdown line items as separate transfers, misread structural relationships. I was asking an instruction-following model to do structural inference. That's not a prompting problem. That's the wrong model.
 
 ![Classify Switch Pipeline](/assets/images/classify_switch_pipeline.svg)
 
-I embraced LLM-based extraction fully. A classification prompt identified the
-document type. A Power Automate Switch routed to one of four extraction prompts,
-each with its own JSON schema. This was the closest I got before the real solution
-— and it exposed the actual problem clearly.
-
-GPT-4.1 is an instruction-following model. The extraction prompts I needed weren't
-instruction-following tasks. They were reasoning tasks:
-
-- Infer that the single "From" account at the top of a sweep applies to every row
-  in the table below it
-- Understand that FFC routing means the sub-account is the real beneficiary, not
-  the intermediate bank
-- Distinguish between line items that describe cost breakdown versus line items that
-  are separate transfers
-- Decide whether a "Total" row aggregates destinations or justifies a single wire amount
-
-GPT-4.1 handled clean documents acceptably. On complex ones it left fields blank,
-treated cost breakdowns as separate transfers, or misread structural relationships.
-The model was doing its best. I was asking it to do something it wasn't built for.
-
-The architecture also created a maintenance problem: five prompts, four JSON schemas,
-a Switch with four branches. Adding a new document type meant a new prompt, a new
-schema, a new Switch case.
-
----
-
-## What Actually Worked
-
-I collapsed everything to one prompt.
-
-![GPT5 prompt Pipeline](/assets/images/gpt5_single_prompt_pipeline_v2.svg)
+So I collapsed the whole thing to one prompt.
 
 One prompt. One schema. All document types. No classifier. No Switch. No branches.
 
-The schema defines every money movement as a `from → to → amount` row:
+![GPT5 prompt Pipeline](/assets/images/gpt5_single_prompt_pipeline_v2.svg)
+
+The schema is just money movements. From, to, amount. Every document type produces the same shape. The prompt tells the model to extract every distinct money movement, infer shared values from context, treat FFC accounts as the real beneficiary, and flag the document if the amounts don't sum to the grand total.
 
 ```json
 {
@@ -131,66 +53,12 @@ The schema defines every money movement as a `from → to → amount` row:
 }
 ```
 
-The prompt instructs the model to extract every distinct money movement, infer
-shared values from context, use FFC accounts as the real beneficiary, and validate
-that amounts sum to the grand total.
+The model is GPT-5 reasoning. It reads the document, builds up an understanding of what's happening in it, infers entity relationships, and maps everything to the schema without being told what type of document it's looking at. Document type is still in the output, but it's a byproduct of the reasoning rather than a prerequisite for routing. Clean documents process in under five seconds.
 
-The reasoning model reads the document, builds an internal model of its structure,
-infers entity relationships, and maps everything to the universal schema — without
-being told what type of document it's processing. Document type is still output as
-a field, but it's a byproduct of reasoning rather than a routing prerequisite.
+What I had before was five prompts, four schemas, a Switch with four branches, and a single point of misrouting with no recovery path. What I have now is one prompt and a validation flag. If the amounts don't sum to the grand total, the document goes to human review.
 
-The arithmetic validation catches extraction failures: if `grand_total` is present
-and the amounts don't sum to it, a `validation_error` field routes the document to
-human review. Clean documents get processed automatically.
+The part I keep thinking about: the classify-then-branch architecture wasn't more complex because it was better. It was more complex because the model underneath it wasn't up to the task. The pipeline was compensating. Put in a model that can actually reason through the problem and the pipeline almost disappears.
 
 ---
 
-## The Numbers
-
-| Dimension | Classify-then-branch (GPT-4.1) | Single prompt (GPT-5 reasoning) |
-|---|---|---|
-| Prompts to maintain | 5 | 1 |
-| Power Automate actions | ~15 | ~5 |
-| JSON schemas | 4 | 1 |
-| Adding a new document type | New prompt + Switch case + schema | Update one prompt |
-| Failure modes | Misclassification, wrong branch, null fields | Extraction error |
-| Calls per document | 2 | 1 |
-
----
-
-## What This Actually Means
-
-The lesson isn't specific to document extraction. It's about where complexity
-belongs in an AI pipeline.
-
-**Classification-and-branch architectures push complexity into orchestration.** The
-prompt stays simple; the pipeline compensates. You pay for this with failure modes
-at every routing decision, with maintenance overhead on every branch, with no
-recovery path from a misclassification.
-
-**A reasoning model moves that complexity into the model itself** — where it's
-invisible, zero-maintenance, and doesn't require you to enumerate every document
-type in advance. The model infers structure as part of generating output. That's
-what it's for.
-
-The broader principle: if you're building elaborate classification and branching
-logic to compensate for a model that can't reason through the problem, you might
-have the wrong model. Pipeline complexity is often a symptom of model mismatch.
-
-Universal schemas are worth looking for. Every money movement is `from → to →
-amount`. Every support ticket is `symptom → severity → owner`. Find the invariant
-in your domain. Build the schema around that, not around the document types.
-
-And built-in validation catches what prompts miss. Extraction will fail
-occasionally. A deterministic check — arithmetic, referential integrity, required
-field presence — provides a reliable safety net without requiring extraction to be
-perfect.
-
-The reasoning model didn't just solve the problem. It simplified the entire pipeline.
-
----
-
-*Rich Wellman is a Solutions Architect at a major healthcare system, building AI
-automation on Azure. He writes about what actually works at
-[richwellman.com](https://richwellman.com).*
+*Rich Wellman is a Solutions Architect at a major healthcare system, building AI automation on Azure. He writes about what actually works at [richwellman.com](https://richwellman.com).*
