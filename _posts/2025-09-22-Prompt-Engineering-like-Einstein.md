@@ -285,4 +285,4 @@ The difference is the ROI of thinking before prompting.
 
 ---
 
-*Rich Wellman is a Solutions Architect at a major healthcare system, building AI automation on Azure. He writes about what actually works at [richwellman.com](https://richwellman.com).*
+*Rich Wellman is a Solutions Architect at a large enterprise, building AI automation on Azure. He writes about what actually works at [richwellman.com](https://richwellman.com).*

@@ -40,4 +40,4 @@ Build the boring star first. Power BI does exactly what it promised when you do.
 
 ---
 
-*Rich Wellman is a Solutions Architect at a major healthcare system, building data and AI systems on Azure and Microsoft Fabric. He writes about what actually works at [richwellman.com](https://richwellman.com).*
+*Rich Wellman is a Solutions Architect at a large enterprise, building data and AI systems on Azure and Microsoft Fabric. He writes about what actually works at [richwellman.com](https://richwellman.com).*

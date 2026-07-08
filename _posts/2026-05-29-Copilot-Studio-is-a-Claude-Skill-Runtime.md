@@ -7,7 +7,7 @@ chatbot builder." That's accurate — the way saying a compiler is a text proces
 is accurate. Technically true, completely misses the point.
 
 I've spent the last several months building agents in Copilot Studio for a large
-healthcare system. What I've come to understand is that Copilot Studio — in its
+enterprise. What I've come to understand is that Copilot Studio — in its
 modern generative orchestration mode — is running the same fundamental loop as
 Claude's tool-use system, OpenAI function calling, LangChain's agent executor, and
 Microsoft's own Semantic Kernel. The "low-code" label describes the authoring
@@ -79,8 +79,8 @@ wrapper:
 - DLP policies, compliance boundaries, and audit trail built into the platform
 - Licensing and capacity management Microsoft already handles
 
-If you're building AI agents inside a regulated enterprise — healthcare, finance,
-government — that wrapper isn't overhead. It's the thing that lets the project ship
+If you're building AI agents inside a regulated enterprise — finance, government,
+insurance — that wrapper isn't overhead. It's the thing that lets the project ship
 at all. Any custom-built agent framework means you're also building the auth, the
 deployment surface, the compliance story, and the licensing model. Copilot Studio
 comes with all of that.
@@ -156,6 +156,6 @@ built to do.
 
 ---
 
-*Rich Wellman is a Solutions Architect at a major healthcare system, building AI
+*Rich Wellman is a Solutions Architect at a large enterprise, building AI
 automation on Azure. He writes about what actually works at
 [richwellman.com](https://richwellman.com).*

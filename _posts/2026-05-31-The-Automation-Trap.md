@@ -2,7 +2,7 @@
 
 Most automation projects don't fail because the technology doesn't work. They fail because the team picked the wrong process.
 
-I've built automation pipelines at a large healthcare system for the past few years, everything from Power Automate flows that fire on SharePoint triggers to multi-step AI agents that extract structured data from PDFs. The hardest thing I've learned isn't how to build them. It's how to decide what to build.
+I've built automation pipelines at a large enterprise for the past few years, everything from Power Automate flows that fire on SharePoint triggers to multi-step AI agents that extract structured data from PDFs. The hardest thing I've learned isn't how to build them. It's how to decide what to build.
 
 The selection problem is invisible until it isn't. You spend eight weeks engineering a solution, ship it, and then watch it save four hours a month. The math was never there. You just didn't run the math before you started.
 
@@ -83,7 +83,7 @@ A direct-labor calculation understates ROI by 30–50%. Error reduction and cycl
 
 In a regulated environment, a third dimension can reclassify a process. Compliance exposure, audit requirements, and data residency constraints can push a Quick Win into Strategic Bet territory, not because the automation is technically harder, but because the governance work around it is.
 
-Before finalizing a quadrant placement: ask whether the process touches protected health information, financial records, or a regulatory workflow. If yes, the effort estimate goes up. The value might too, compliance risk reduction is often the highest-value automation outcome in healthcare, but the naive effort estimate needs to be adjusted.
+Before finalizing a quadrant placement: ask whether the process touches regulated personal data, financial records, or a regulatory workflow. If yes, the effort estimate goes up. The value might too, compliance risk reduction is often the highest-value automation outcome in regulated industries, but the naive effort estimate needs to be adjusted.
 
 ---
 
@@ -99,4 +99,4 @@ McKinsey didn't tell you what to build first. This does.
 
 ---
 
-*Rich Wellman is an AI Automation Specialist at the healthcare system where he works, building AI pipelines on Azure. He writes about what actually works at richwellman.com.*
+*Rich Wellman is an AI Automation Specialist at the enterprise where he works, building AI pipelines on Azure. He writes about what actually works at richwellman.com.*

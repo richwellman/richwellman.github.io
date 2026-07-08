@@ -2,7 +2,7 @@
 
 So we got to one prompt eventually. But it took six different architectures to get there, and I wouldn't have believed it would work if I hadn't watched it happen.
 
-The problem is banking documents. Wire transfer requests, patient cash sweeps, concentration reports. Treasury staff reconcile these against the system every day to confirm every dollar moved where it was supposed to. Each document has transactions. Each transaction has a from, a to, and an amount. The job is to extract all of that and produce rows the system can compare against.
+The problem is banking documents. Wire transfer requests, cash sweeps, concentration reports. Treasury staff reconcile these against the system every day to confirm every dollar moved where it was supposed to. Each document has transactions. Each transaction has a from, a to, and an amount. The job is to extract all of that and produce rows the system can compare against.
 
 The first thing I tried was the obvious thing. Paste the PDF text into a model, prompt it for structured JSON. That worked as a proof of concept. An LLM can read these documents and return structured output without a custom parser. You can't automate that form, but the signal was clear enough to keep going.
 
@@ -61,4 +61,4 @@ The part I keep thinking about: the classify-then-branch architecture wasn't mor
 
 ---
 
-*Rich Wellman is a Solutions Architect at a major healthcare system, building AI automation on Azure. He writes about what actually works at [richwellman.com](https://richwellman.com).*
+*Rich Wellman is a Solutions Architect at a large enterprise, building AI automation on Azure. He writes about what actually works at [richwellman.com](https://richwellman.com).*
